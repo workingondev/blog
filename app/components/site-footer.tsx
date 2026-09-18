@@ -8,7 +8,7 @@ export function SiteFooter() {
       </Link>
       <span aria-hidden="true">·</span>
       <a
-        href="https://github.com/"
+        href="https://github.com/workingondev"
         target="_blank"
         rel="noreferrer"
         className="footer-link -mx-1 -my-2 px-1 py-2"
@@ -17,7 +17,7 @@ export function SiteFooter() {
       </a>
       <span aria-hidden="true">·</span>
       <a
-        href="https://x.com/"
+        href="https://x.com/workingondev"
         target="_blank"
         rel="noreferrer"
         className="footer-link -mx-1 -my-2 inline-flex min-w-7 justify-center px-1 py-2"

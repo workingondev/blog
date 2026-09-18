@@ -64,18 +64,18 @@ export default function Home() {
           </h1>
 
           <p className="intro-primary mt-5 text-[clamp(0.9375rem,1.7vw,1rem)] leading-[1.75] tracking-[-0.015em] text-neutral-800 dark:text-neutral-200">
-            I&apos;m curious about how things work and usually understand them by
-            building. I work in tech, think about marketing, and make memes.
+            I&apos;m curious about how things work and usually understand them
+            by building. I work in tech, think about marketing, and make memes.
           </p>
 
           <p className="intro-secondary mt-4 text-[clamp(0.875rem,1.7vw,1rem)] leading-[1.75] tracking-[-0.015em] text-neutral-600 dark:text-neutral-400 sm:mt-5">
-            I learn from first principles, test ideas in the real world, and write
-            while they are still taking shape.
+            I learn from first principles, test ideas in the real world, and
+            write while they are still taking shape.
           </p>
 
           <p className="intro-secondary mt-4 text-[clamp(0.875rem,1.7vw,1rem)] leading-[1.75] tracking-[-0.015em] text-neutral-600 dark:text-neutral-400 sm:mt-5">
             Right now: post-quantum cryptography, product design, distribution,
-            and the small decisions that make people care.
+            and the small decisions with great design.
           </p>
 
           <nav
