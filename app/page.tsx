@@ -1,5 +1,5 @@
-import Image from "next/image";
-import editorialStudy from "@/public/images/editorial-study.png";
+import Link from "next/link";
+import { LocalTime } from "./components/local-time";
 import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
 
@@ -10,15 +10,22 @@ export default function Home() {
       {
         "@type": "Person",
         "@id": "https://workingon.dev/#person",
-        name: "Akshit",
+        name: "akshit",
         url: "https://workingon.dev",
+        homeLocation: {
+          "@type": "Country",
+          name: "India",
+        },
         knowsAbout: [
-          "Blockchain infrastructure",
+          "Technology",
+          "Product design",
+          "Marketing",
+          "Customer acquisition",
+          "Internet culture",
+          "Building products",
           "Cryptography",
           "Post-quantum cryptography",
           "Distributed systems",
-          "Digital wallets",
-          "Cryptographic protocols",
         ],
       },
       {
@@ -27,7 +34,7 @@ export default function Home() {
         url: "https://workingon.dev",
         name: "workingon.dev",
         description:
-          "Research notes on blockchain infrastructure, cryptography, distributed systems, and post-quantum security.",
+          "Notes on technology, design, marketing, building, research, and internet culture.",
         inLanguage: "en",
         author: { "@id": "https://workingon.dev/#person" },
         publisher: { "@id": "https://workingon.dev/#person" },
@@ -36,7 +43,7 @@ export default function Home() {
         "@type": "ProfilePage",
         "@id": "https://workingon.dev/#profile",
         url: "https://workingon.dev",
-        name: "Akshit",
+        name: "akshit",
         mainEntity: { "@id": "https://workingon.dev/#person" },
         isPartOf: { "@id": "https://workingon.dev/#website" },
       },
@@ -44,44 +51,46 @@ export default function Home() {
   };
 
   return (
-    <div className="site-shell mx-auto grid h-dvh w-full max-w-[72rem] grid-rows-[auto_1fr_auto] overflow-hidden px-7 py-5 text-neutral-950 sm:px-12 sm:py-7 lg:px-20 lg:py-10 dark:text-neutral-100">
+    <div className="home-shell mx-auto grid w-full max-w-[72rem] grid-rows-[auto_1fr_auto] px-6 py-5 text-neutral-950 sm:px-12 sm:py-8 lg:px-20 lg:py-10 dark:text-neutral-100">
       <SiteHeader active="me" />
 
-      <main className="grid min-h-0 content-center py-7 sm:py-10">
-        <section
-          aria-labelledby="introduction"
-          className="grid items-center gap-7 sm:grid-cols-[minmax(0,32rem)_minmax(7.5rem,10rem)] sm:justify-between sm:gap-10 lg:grid-cols-[minmax(0,32rem)_12.5rem] lg:gap-20"
-        >
-          <div className="max-w-[32rem]">
-            <h1 id="introduction" className="sr-only">
-              About Akshit
-            </h1>
-            <p className="intro-primary text-[clamp(0.875rem,1.7vw,1rem)] leading-[1.75] tracking-[-0.015em] text-neutral-800 dark:text-neutral-200">
-              I&apos;m Akshit. I work on blockchain infrastructure and study
-              cryptography, distributed systems, and the machinery beneath their
-              abstractions.
-            </p>
+      <main className="home-main grid min-h-0 content-center py-8 sm:py-10">
+        <section aria-labelledby="introduction" className="max-w-[34rem]">
+          <h1
+            id="introduction"
+            className="text-[clamp(1.375rem,3vw,1.75rem)] font-normal leading-[1.2] tracking-[-0.035em]"
+          >
+            I&apos;m akshit.
+          </h1>
 
-            <p className="intro-secondary mt-4 text-[clamp(0.875rem,1.7vw,1rem)] leading-[1.75] tracking-[-0.015em] text-neutral-600 dark:text-neutral-400 sm:mt-5">
-              I learn from first principles, build systems to test my
-              understanding, and write about what survives the process.
-            </p>
+          <p className="intro-primary mt-5 text-[clamp(0.9375rem,1.7vw,1rem)] leading-[1.75] tracking-[-0.015em] text-neutral-800 dark:text-neutral-200">
+            I&apos;m curious about how things work and usually understand them by
+            building. I work in tech, think about marketing, and make memes.
+          </p>
 
-            <p className="intro-secondary mt-4 text-[clamp(0.875rem,1.7vw,1rem)] leading-[1.75] tracking-[-0.015em] text-neutral-600 dark:text-neutral-400 sm:mt-5">
-              Currently, I&apos;m exploring post-quantum cryptography, blockchain
-              security, wallets, and cryptographic protocols.
-            </p>
-          </div>
+          <p className="intro-secondary mt-4 text-[clamp(0.875rem,1.7vw,1rem)] leading-[1.75] tracking-[-0.015em] text-neutral-600 dark:text-neutral-400 sm:mt-5">
+            I learn from first principles, test ideas in the real world, and write
+            while they are still taking shape.
+          </p>
 
-          <figure className="editorial-image justify-self-end overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-900">
-            <Image
-              src={editorialStudy}
-              alt="An abstract study of stone, metal, and fine connecting lines"
-              priority
-              sizes="(min-width: 1024px) 200px, (min-width: 640px) 160px, 96px"
-              className="h-full w-full object-cover grayscale opacity-90 transition-[filter,opacity] duration-300 dark:brightness-[0.72] dark:contrast-[1.06] dark:opacity-80"
-            />
-          </figure>
+          <p className="intro-secondary mt-4 text-[clamp(0.875rem,1.7vw,1rem)] leading-[1.75] tracking-[-0.015em] text-neutral-600 dark:text-neutral-400 sm:mt-5">
+            Right now: post-quantum cryptography, product design, distribution,
+            and the small decisions that make people care.
+          </p>
+
+          <nav
+            aria-label="Explore akshit's work"
+            className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm"
+          >
+            <Link className="home-action-link" href="/blog">
+              read the writing
+            </Link>
+            <Link className="home-action-link" href="/now">
+              see what I&apos;m doing now
+            </Link>
+          </nav>
+
+          <LocalTime />
         </section>
       </main>
 

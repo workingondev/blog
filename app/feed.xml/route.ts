@@ -39,13 +39,13 @@ export async function GET() {
 
   const feed = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Writing — Akshit</title>
-  <subtitle>Research notes on cryptography, blockchains, and distributed systems.</subtitle>
+  <title>writing — akshit</title>
+  <subtitle>Essays and notes on technology, design, marketing, building, research, and internet culture.</subtitle>
   <id>https://workingon.dev/blog</id>
   <link href="https://workingon.dev/blog" />
   <link href="https://workingon.dev/feed.xml" rel="self" type="application/atom+xml" />
   <updated>${latestUpdate.toISOString()}</updated>
-  <author><name>Akshit</name><uri>https://workingon.dev</uri></author>${items}
+  <author><name>akshit</name><uri>https://workingon.dev</uri></author>${items}
 </feed>`;
 
   return new Response(feed, {

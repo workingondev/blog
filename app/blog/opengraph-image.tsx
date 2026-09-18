@@ -1,10 +1,10 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "akshit — notes on technology, design, marketing, and ideas";
+export const alt = "writing by akshit on technology, design, marketing, and ideas";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
+export default function BlogOpenGraphImage() {
   return new ImageResponse(
     <div
       style={{
@@ -20,36 +20,31 @@ export default function OpenGraphImage() {
       }}
     >
       <div style={{ display: "flex", fontSize: 24 }}>akshit</div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: 880,
-        }}
-      >
+      <div style={{ display: "flex", flexDirection: "column", maxWidth: 920 }}>
         <div
           style={{
             display: "flex",
-            fontSize: 60,
-            letterSpacing: "-2.5px",
-            lineHeight: 1.08,
+            fontSize: 72,
+            letterSpacing: "-3px",
+            lineHeight: 1,
           }}
         >
-          Technology, design, marketing, and ideas.
+          writing
         </div>
         <div
           style={{
             color: "#737373",
             display: "flex",
-            fontSize: 24,
+            fontSize: 25,
+            lineHeight: 1.4,
             marginTop: 30,
           }}
         >
-          Notes from learning by building.
+          Technology · design · marketing · research · internet culture
         </div>
       </div>
       <div style={{ color: "#737373", display: "flex", fontSize: 20 }}>
-        workingon.dev
+        workingon.dev/blog
       </div>
     </div>,
     size,

@@ -3,7 +3,11 @@
 import { useState } from "react";
 
 export function ThemeToggle() {
-  const [isNight, setIsNight] = useState(false);
+  const [isNight, setIsNight] = useState(
+    () =>
+      typeof document !== "undefined" &&
+      document.documentElement.classList.contains("dark"),
+  );
 
   function toggleTheme() {
     const nextIsNight = !isNight;
@@ -18,7 +22,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={`Switch to ${isNight ? "day" : "night"} theme`}
       aria-pressed={isNight}
-      className="theme-toggle justify-self-end text-[0.6875rem] leading-none text-neutral-500 transition-colors hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neutral-500 dark:text-neutral-500 dark:hover:text-neutral-50"
+      className="theme-toggle -m-2 justify-self-end p-2 text-[0.9375rem] leading-none text-neutral-500 transition-colors hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-500 dark:text-neutral-500 dark:hover:text-neutral-50"
     >
       {isNight ? "night" : "day"}
     </button>

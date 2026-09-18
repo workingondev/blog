@@ -13,7 +13,7 @@ export default function NotFound() {
       <SiteHeader />
       <main className="grid content-center py-20">
         <div className="max-w-[30rem]">
-          <p className="text-[0.6875rem] tracking-[0.08em] text-neutral-500 uppercase">
+          <p className="text-[0.6875rem] tracking-[0.08em] text-neutral-500">
             404
           </p>
           <h1 className="mt-4 text-[clamp(1.75rem,4vw,2.5rem)] font-normal tracking-[-0.04em]">

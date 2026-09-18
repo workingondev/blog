@@ -1,6 +1,8 @@
 import type { MDXComponents } from "mdx/types";
+import Link from "next/link";
 import { GroverWorkFactorChart } from "./app/components/grover-work-factor-chart";
 import { Mermaid } from "./app/components/mermaid";
+import { ShorPeriodChart } from "./app/components/shor-period-chart";
 
 const components: MDXComponents = {
   h2: (props) => <h2 {...props} />,
@@ -8,19 +10,18 @@ const components: MDXComponents = {
   a: ({ href = "", ...props }) => {
     const isExternal = href.startsWith("http");
 
-    return (
-      <a
-        href={href}
-        {...props}
-        {...(isExternal ? { target: "_blank", rel: "noreferrer" } : {})}
-      />
-    );
+    if (isExternal) {
+      return <a href={href} {...props} target="_blank" rel="noreferrer" />;
+    }
+
+    return <Link href={href} {...props} />;
   },
   Note: ({ children }: { children: React.ReactNode }) => (
     <aside className="article-note">{children}</aside>
   ),
   Mermaid,
   GroverWorkFactorChart,
+  ShorPeriodChart,
 };
 
 export function useMDXComponents(): MDXComponents {

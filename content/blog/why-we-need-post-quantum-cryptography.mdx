@@ -1,0 +1,404 @@
+export const metadata = {
+  title: "Why We Need Post-Quantum Cryptography Before Quantum Computers Arrive",
+  description:
+    "A first-principles explanation of the quantum threat to modern cryptography, how Shor's algorithm factors 15, and why blockchain systems need time to migrate.",
+  published: "2026-09-18",
+  author: "akshit",
+  category: "Post-quantum cryptography",
+  topic: "Tech",
+  tags: [
+    "post-quantum cryptography",
+    "quantum computing",
+    "Shor's algorithm",
+    "blockchain security",
+    "cryptographic migration",
+  ],
+  readingTime: "15 min read",
+  tableOfContents: [
+    { id: "the-question", title: "The question" },
+    { id: "what-cryptography-does", title: "What cryptography does" },
+    { id: "what-quantum-changes", title: "What quantum changes" },
+    { id: "shors-algorithm", title: "Shor's algorithm" },
+    { id: "factoring-fifteen", title: "Factoring 15" },
+    { id: "what-breaks", title: "What breaks" },
+    { id: "why-blockchains-care", title: "Why blockchains care" },
+    { id: "why-start-now", title: "Why start now" },
+    { id: "nist-standards", title: "The NIST standards" },
+    { id: "migration", title: "Migration is the work" },
+    { id: "what-to-remember", title: "What to remember" },
+  ],
+};
+
+When I first started reading about post-quantum cryptography, one question kept coming back to me:
+
+**If our current cryptographic systems have worked for decades, why are we trying to replace them before a powerful quantum computer even exists?**
+
+The short answer is that cryptography is not changed the day after it fails. It is changed years before failure becomes possible. We have to discover new algorithms, test them, standardize them, put them into protocols, update hardware and software, move old keys, and give millions of users time to migrate.
+
+This article builds that answer from the ground up. We will first understand what cryptography protects, then see what a quantum computer changes, work through a small example of Shor&apos;s algorithm, and finally connect the mathematics to blockchains and the new standards.
+
+<Note>
+  A useful phrase is <strong>quantum-resistant</strong>, not “quantum-proof.” No
+  security claim lasts forever. The new algorithms are designed to resist the
+  best classical and quantum attacks currently known.
+</Note>
+
+<h2 id="the-question">The real question is not “when?”</h2>
+
+Nobody has built a cryptographically relevant quantum computer yet: a fault-tolerant machine large enough to break the public-key systems we use in practice. It may take many years. Estimates also change as hardware and algorithms improve.
+
+So “What exact year will RSA or elliptic-curve cryptography break?” is not the most useful question.
+
+A better question is:
+
+$$
+T_{\text{migration}} + T_{\text{data life}} > T_{\text{quantum arrival}}\;?
+$$
+
+Here:
+
+- $T_{\text{migration}}$ is the time needed to replace vulnerable cryptography.
+- $T_{\text{data life}}$ is the time information must remain secret or a key must remain trustworthy.
+- $T_{\text{quantum arrival}}$ is the unknown time until a capable quantum computer exists.
+
+If the left side may be larger than the right side, waiting is the risky choice. This is sometimes called **Mosca&apos;s inequality**. It turns an uncertain prediction into a planning decision.
+
+<h2 id="what-cryptography-does">What cryptography actually does</h2>
+
+Cryptography is often described as “encryption,” but modern systems ask it to do several different jobs:
+
+- **Confidentiality:** prevent other people from reading a message.
+- **Integrity:** reveal whether data was changed.
+- **Authentication:** prove who created or sent something.
+- **Key establishment:** let two parties create a shared secret over a public network.
+
+The distinction matters because quantum computers do not affect every job in the same way.
+
+### Symmetric cryptography
+
+In symmetric cryptography, both sides already share the same secret key. AES is a familiar example. If Alice and Bob both know $k$, Alice encrypts a message with $k$ and Bob decrypts it with the same $k$.
+
+The security idea is simple: an attacker should not be able to recover the message without searching an impossibly large key space.
+
+### Public-key cryptography
+
+Public-key cryptography uses a pair of keys:
+
+- a **public key**, which can be shared with everyone;
+- a **private key**, which must remain secret.
+
+The system depends on a mathematical problem that is easy in one direction and extremely difficult to reverse.
+
+For RSA, multiplication is easy:
+
+$$
+n = p \times q
+$$
+
+But if $p$ and $q$ are sufficiently large prime numbers, recovering them from $n$ is believed to be difficult for an ordinary computer.
+
+Elliptic-curve cryptography uses a different hard problem. Starting with a point $P$ and a secret number $k$, it is easy to calculate:
+
+$$
+Q = kP
+$$
+
+But, given only $P$ and $Q$, recovering $k$ is classically difficult. This is the elliptic-curve discrete logarithm problem. Many blockchain signature schemes depend on it.
+
+<Mermaid
+  label="The main cryptographic jobs and examples of the algorithms used for them"
+  caption="Public-key and symmetric cryptography solve different problems, so the quantum response is not the same for both."
+  chart={`
+flowchart LR
+  Need[Secure communication] --> Establish[Establish a shared key]
+  Need --> Sign[Prove who authorized data]
+  Establish --> Public[Public-key algorithms]
+  Sign --> Signature[Digital signatures]
+  Public --> Secret[Shared secret]
+  Secret --> Symmetric[Symmetric encryption protects the data]
+`}
+/>
+
+<h2 id="what-quantum-changes">What a quantum computer changes</h2>
+
+A normal bit is either $0$ or $1$. A qubit can be prepared in a quantum state written as:
+
+$$
+|\psi\rangle = \alpha|0\rangle + \beta|1\rangle
+$$
+
+The numbers $\alpha$ and $\beta$ are amplitudes, and their squared magnitudes give the probabilities of measuring $0$ or $1$:
+
+$$
+|\alpha|^2 + |\beta|^2 = 1
+$$
+
+People often shorten this to “a qubit is both 0 and 1.” That phrase is helpful at first, but it can create the wrong picture. A quantum computer does **not** simply try every answer at once and then read all of them. Measurement produces limited classical information.
+
+The real power comes from controlling **interference**. A quantum algorithm changes amplitudes so that paths leading toward useful information reinforce one another while other paths cancel. The final measurement is then more likely to reveal the structure we need.
+
+This means quantum computers are not magically faster at every task. Their advantage appears when a problem has mathematical structure that a quantum algorithm can exploit.
+
+<h2 id="shors-algorithm">Shor&apos;s algorithm: from factors to periods</h2>
+
+In 1994, Peter Shor showed that a quantum computer could efficiently solve integer factorization and discrete logarithms. These are precisely the hard problems behind RSA, Diffie–Hellman, and elliptic-curve systems.
+
+The important insight is that Shor&apos;s algorithm does not attack a large number by testing possible factors one by one. Instead, it transforms factoring into a **period-finding problem**.
+
+Suppose we want to factor a composite number $N$:
+
+1. Choose a number $a$ such that $1 < a < N$.
+2. Calculate $\gcd(a, N)$. If it is already greater than $1$, we accidentally found a factor and are done.
+3. Otherwise, study the repeating function
+
+$$
+f(x) = a^x \bmod N
+$$
+
+4. Find its period $r$: the smallest positive integer for which
+
+$$
+a^r \equiv 1 \pmod N
+$$
+
+5. If $r$ is even and $a^{r/2} \not\equiv -1 \pmod N$, calculate
+
+$$
+\gcd(a^{r/2}-1, N)
+\quad\text{and}\quad
+\gcd(a^{r/2}+1, N)
+$$
+
+Those greatest common divisors can reveal non-trivial factors of $N$.
+
+Why does that work? From $a^r \equiv 1 \pmod N$, we get:
+
+$$
+a^r - 1 \equiv 0 \pmod N
+$$
+
+When $r$ is even, the left side is a difference of squares:
+
+$$
+(a^{r/2}-1)(a^{r/2}+1) \equiv 0 \pmod N
+$$
+
+The two terms can share non-trivial divisors with $N$. The quantum part efficiently estimates the period $r`; the final greatest-common-divisor calculations are ordinary classical mathematics.
+
+<Note>
+  The algorithm can choose an unhelpful value of <em>a</em> or find an odd
+  period. That is not a failure of the idea: we choose another value and run
+  it again. A useful result occurs with good probability after repeated runs.
+</Note>
+
+<h2 id="factoring-fifteen">A complete example: factoring 15</h2>
+
+Real RSA moduli contain hundreds or thousands of bits. We will use $N=15$ because every step fits on the page. A classical computer can obviously factor 15 immediately; the point is to understand the structure that Shor&apos;s algorithm uses at much larger scales.
+
+Choose:
+
+$$
+a = 7
+$$
+
+First check that $7$ and $15$ share no factor:
+
+$$
+\gcd(7,15)=1
+$$
+
+Now calculate powers of 7 and keep only the remainder after division by 15:
+
+$$
+\begin{aligned}
+7^0 \bmod 15 &= 1 \\
+7^1 \bmod 15 &= 7 \\
+7^2 \bmod 15 &= 49 \bmod 15 = 4 \\
+7^3 \bmod 15 &= 343 \bmod 15 = 13 \\
+7^4 \bmod 15 &= 2401 \bmod 15 = 1
+\end{aligned}
+$$
+
+We returned to 1 after four steps. Therefore the period is:
+
+$$
+r=4
+$$
+
+<ShorPeriodChart />
+
+Because $r$ is even, compute:
+
+$$
+a^{r/2}=7^{4/2}=7^2=49
+$$
+
+Then calculate the two greatest common divisors:
+
+$$
+\gcd(49-1,15)=\gcd(48,15)=3
+$$
+
+$$
+\gcd(49+1,15)=\gcd(50,15)=5
+$$
+
+We have recovered both factors:
+
+$$
+15=3\times5
+$$
+
+<Mermaid
+  label="The quantum and classical stages of Shor's factoring algorithm"
+  caption="The crucial speedup is in period finding. Choosing numbers, checking conditions, and taking greatest common divisors remain classical steps."
+  chart={`
+flowchart LR
+  A[Choose N = 15 and a = 7] --> B[Check gcd of 7 and 15]
+  B --> C[Quantum period finding]
+  C --> D[Recover r = 4]
+  D --> E[Classical gcd calculations]
+  E --> F[Factors 3 and 5]
+`}
+/>
+
+For a toy number, listing the sequence is easy. For a production RSA key, the corresponding period is far too costly to recover classically. A sufficiently large fault-tolerant quantum computer could use superposition, controlled modular arithmetic, interference, and the quantum Fourier transform to estimate it efficiently.
+
+That is the threat: not faster guessing, but a fundamentally better algorithm for the mathematical foundation of today&apos;s public-key cryptography.
+
+<h2 id="what-breaks">What breaks—and what does not</h2>
+
+“Quantum computers will break encryption” is too broad to be useful. The more accurate picture is:
+
+| Cryptographic family | Examples | Quantum effect | Practical response |
+| --- | --- | --- | --- |
+| Integer factorization | RSA | Shor&apos;s algorithm threatens it | Replace it |
+| Discrete logarithms | Diffie–Hellman, ECDH, DSA, ECDSA | Shor&apos;s algorithm threatens them | Replace them |
+| Symmetric cryptography | AES | Grover&apos;s algorithm gives a quadratic search speedup, not an exponential one | Use suitable key sizes |
+| Hash functions | SHA-2, SHA-3 | Quantum search changes generic security bounds, but does not make hashes useless | Use suitable output sizes and analyze each use |
+
+For an $n$-bit symmetric key, classical exhaustive search takes roughly:
+
+$$
+2^n
+$$
+
+Grover&apos;s algorithm reduces the idealized number of quantum queries to roughly:
+
+$$
+2^{n/2}
+$$
+
+That is a serious reduction, but it is very different from Shor&apos;s polynomial-time attack on factorization and discrete logarithms. This is why public-key systems need new mathematical foundations, while symmetric systems can often respond with larger security parameters.
+
+<h2 id="why-blockchains-care">Why blockchains should care</h2>
+
+Blockchains do not depend on only one kind of cryptography. Hash functions link blocks, identify data, and support proof-of-work or commitment structures. Digital signatures authorize transactions.
+
+The most direct quantum risk is usually the **signature layer**.
+
+In an elliptic-curve signature system, a private key is a number $k$ and its public key is related by:
+
+$$
+Q=kP
+$$
+
+A normal computer cannot feasibly recover $k$ from $P$ and $Q$. Shor&apos;s algorithm changes that assumption. If a future quantum computer can solve the elliptic-curve discrete logarithm at the required scale, an exposed public key could reveal its private key. An attacker could then create a valid-looking signature and move assets without learning a password or stealing a seed phrase directly.
+
+This creates several migration problems that do not appear in a simple app update:
+
+- **Public keys may already be visible.** Some address designs hide a public key until it is used; after a transaction, the key can become public.
+- **The ledger is permanent.** Old transactions and public keys remain available for future analysis.
+- **Dormant assets do not update themselves.** Owners may have lost access, stopped paying attention, or stored keys in hardware that cannot support a new scheme.
+- **Consensus requires coordination.** Wallets, nodes, exchanges, custodians, hardware devices, smart contracts, and users must agree on new verification rules.
+- **Post-quantum signatures are often larger.** Larger keys and signatures can affect transaction size, bandwidth, storage, fees, and verification design.
+
+Hash functions do not become irrelevant, but their exact quantum security must be evaluated for the job they perform. A signature problem and a hashing problem are not interchangeable.
+
+<h2 id="why-start-now">Why start before the machine exists</h2>
+
+There are two separate clocks.
+
+The first is the **migration clock**. Cryptography is buried inside browsers, servers, certificates, VPNs, messaging systems, payment networks, chips, blockchains, and long-lived devices. NIST notes that large cryptographic transitions have historically taken 10 to 20 years. Finding every dependency is often harder than replacing the algorithm itself.
+
+The second is the **data clock**. An attacker can collect encrypted traffic today and keep it until a future machine can decrypt it. This is called **harvest now, decrypt later**. It matters when medical records, state secrets, identity data, business plans, or other information must remain confidential for years.
+
+For blockchains, the timing issue is different but still real. Transactions are public, authorization keys can remain valuable for a long time, and changing a decentralized protocol takes coordination. We cannot assume every owner will move funds during a short emergency window.
+
+<Mermaid
+  label="Why post-quantum migration must start before a capable quantum computer arrives"
+  caption="Preparation, deployment, and user migration take years. Starting after the threat becomes practical leaves no safe transition window."
+  chart={`
+flowchart LR
+  I[Inventory cryptography] --> T[Test new algorithms]
+  T --> H[Deploy hybrid support]
+  H --> M[Migrate keys, software, and users]
+  M --> R[Retire vulnerable algorithms]
+  Q[Capable quantum computer] -. deadline .-> R
+`}
+/>
+
+<h2 id="nist-standards">What NIST standardized</h2>
+
+In 2016, the US National Institute of Standards and Technology began an open international process to evaluate post-quantum algorithms. Researchers submitted candidates, published attacks, measured performance, and reviewed the designs through several rounds. This was not a one-time hackathon; it was a multi-year public standardization effort.
+
+In August 2024, NIST finalized its first three post-quantum standards:
+
+### ML-KEM — FIPS 203
+
+**ML-KEM**, derived from CRYSTALS-Kyber, is the primary standard for establishing a shared secret over a public channel. KEM means **key-encapsulation mechanism**. The shared secret can then be used with efficient symmetric encryption to protect actual data.
+
+### ML-DSA — FIPS 204
+
+**ML-DSA**, derived from CRYSTALS-Dilithium, is the primary general-purpose digital-signature standard. It is designed to prove authenticity and detect modification.
+
+### SLH-DSA — FIPS 205
+
+**SLH-DSA**, derived from SPHINCS+, is an alternative digital-signature standard based on hash functions. Its different foundation gives useful diversity if a future weakness is found in lattice-based designs.
+
+ML-KEM and ML-DSA are based on structured lattice problems, not integer factorization or elliptic-curve discrete logarithms. SLH-DSA is hash-based. “Different mathematics” does not mean “automatically safe,” but it means Shor&apos;s algorithm does not directly solve the problems on which these standards rely.
+
+The standards are not the end of the process. NIST selected HQC in 2025 as a backup key-establishment algorithm based on error-correcting codes, while further signature work continues. Diversity matters because replacing one universal dependency with another universal dependency would create a new concentration of risk.
+
+<h2 id="migration">The real engineering problem is migration</h2>
+
+Choosing an algorithm is only the beginning. A safe transition needs **crypto agility**: the ability to change cryptographic algorithms without redesigning the whole system.
+
+A practical migration looks like this:
+
+1. **Inventory.** Find where vulnerable algorithms, keys, certificates, libraries, protocols, and hardware are used.
+2. **Classify.** Decide which data and authorizations must remain secure for the longest time.
+3. **Experiment.** Measure new key sizes, signature sizes, latency, memory, bandwidth, and failure behavior in the real system.
+4. **Use hybrid designs where appropriate.** Combine a classical and post-quantum mechanism during the transition so that breaking either one alone is not enough. The composition must be designed carefully; “two algorithms” is not automatically “twice as safe.”
+5. **Migrate keys and identities.** Supporting a new algorithm does not protect old keys until users and systems actually move.
+6. **Remove the old path.** A vulnerable compatibility mode left enabled forever becomes the easiest route for an attacker.
+
+For a blockchain, this may also require new address types, transaction rules, wallet interfaces, recovery paths, hardware support, and incentives for inactive users to move. The cryptographic primitive can be standardized in a document; a community cannot.
+
+This is why I now think the phrase **post-quantum migration** is more useful than **post-quantum algorithm**. The algorithm is the mathematical core. Migration is the complete social and engineering system around it.
+
+<h2 id="what-to-remember">What to remember</h2>
+
+The main idea of post-quantum cryptography is not that quantum computers are here, or that every cryptographic tool will suddenly stop working.
+
+It is this:
+
+1. Today&apos;s public-key cryptography relies heavily on factorization and discrete logarithms.
+2. Shor&apos;s algorithm gives a sufficiently capable quantum computer an efficient way to solve those problems.
+3. Symmetric cryptography and hashing are affected differently and do not simply disappear.
+4. New standards such as ML-KEM, ML-DSA, and SLH-DSA use different mathematical foundations.
+5. Replacing cryptography across real systems can take longer than building the first dangerous machine.
+
+We prepare early because the exact arrival date is uncertain, because information can remain valuable for years, and because migration is slow. The goal is not panic. The goal is to make the transition while we still have time to do it carefully.
+
+This article gives us the map. The next step is to open each part: how lattice problems work, what a key-encapsulation mechanism actually does, how post-quantum signatures differ, and what a realistic blockchain migration could look like.
+
+### Sources and further reading
+
+- [NIST: What Is Post-Quantum Cryptography?](https://www.nist.gov/cybersecurity-and-privacy/what-post-quantum-cryptography)
+- [Peter Shor&apos;s original 1994 paper](https://doi.org/10.1109/SFCS.1994.365700)
+- [NIST&apos;s first three finalized post-quantum standards](https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards)
+- [NIST IR 8547: Transition to Post-Quantum Cryptography Standards](https://csrc.nist.gov/pubs/ir/8547/ipd)
+- [IBM Quantum: the mechanics behind qubits](https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/quantum-mechanics-basics)
+- [IBM Quantum: Shor&apos;s algorithm](https://quantum.cloud.ibm.com/learning/en/modules/computer-science/shors-algorithm)
+- [NIST&apos;s selection of HQC](https://www.nist.gov/news-events/news/2025/03/nist-selects-hqc-fifth-algorithm-post-quantum-encryption)

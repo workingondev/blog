@@ -3,7 +3,7 @@ import { getPost, isPostSlug } from "@/content/blog/posts";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Research article on workingon.dev";
+export const alt = "Article on workingon.dev";
 
 export default async function ArticleOpenGraphImage({
   params,
@@ -14,9 +14,9 @@ export default async function ArticleOpenGraphImage({
   const metadata = isPostSlug(slug)
     ? (await getPost(slug)).metadata
     : {
-        title: "Research notes",
+        title: "writing",
         category: "workingon.dev",
-        description: "Technical research from first principles.",
+        description: "Notes from learning by building.",
       };
   const titleSize = metadata.title.length > 48 ? 54 : 64;
 

@@ -11,7 +11,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified,
       changeFrequency: "monthly",
       priority: 1,
-      images: ["https://workingon.dev/images/editorial-study.png"],
     },
     {
       url: "https://workingon.dev/blog",

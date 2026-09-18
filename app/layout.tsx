@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "katex/dist/katex.min.css";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -12,14 +12,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://workingon.dev"),
   title: {
-    default: "Akshit — Blockchain, cryptography, and distributed systems",
-    template: "%s — Akshit",
+    default: "akshit — Technology, design, marketing, and ideas",
+    template: "%s — akshit",
   },
   description:
-    "Akshit's personal notes on blockchain infrastructure, cryptography, distributed systems, and post-quantum security.",
-  authors: [{ name: "Akshit", url: "https://workingon.dev" }],
-  creator: "Akshit",
-  publisher: "Akshit",
+    "akshit's notes on technology, design, marketing, building, research, and internet culture.",
+  authors: [{ name: "akshit", url: "https://workingon.dev" }],
+  creator: "akshit",
+  publisher: "akshit",
   alternates: {
     canonical: "/",
     types: {
@@ -31,15 +31,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "/",
     siteName: "workingon.dev",
-    title: "Akshit — Blockchain, cryptography, and distributed systems",
+    title: "akshit — Technology, design, marketing, and ideas",
     description:
-      "Research notes on blockchain infrastructure, cryptography, distributed systems, and post-quantum security.",
+      "Notes on technology, design, marketing, building, research, and internet culture.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Akshit — Blockchain, cryptography, and distributed systems",
+    title: "akshit — Technology, design, marketing, and ideas",
     description:
-      "Research notes on blockchain infrastructure, cryptography, distributed systems, and post-quantum security.",
+      "Notes on technology, design, marketing, building, research, and internet culture.",
   },
   verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
     ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
@@ -53,7 +53,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} antialiased`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

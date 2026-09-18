@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="flex items-center gap-3 text-[0.6875rem] leading-none text-neutral-500 dark:text-neutral-500">
-      <Link href="/blog" className="footer-link">
+    <footer className="flex items-center gap-3 text-[0.9375rem] leading-none text-neutral-500 dark:text-neutral-500">
+      <Link href="/blog" className="footer-link -mx-1 -my-2 px-1 py-2">
         writing
       </Link>
       <span aria-hidden="true">·</span>
@@ -11,7 +11,7 @@ export function SiteFooter() {
         href="https://github.com/"
         target="_blank"
         rel="noreferrer"
-        className="footer-link"
+        className="footer-link -mx-1 -my-2 px-1 py-2"
       >
         github<span className="sr-only"> (opens in a new tab)</span>
       </a>
@@ -20,7 +20,7 @@ export function SiteFooter() {
         href="https://x.com/"
         target="_blank"
         rel="noreferrer"
-        className="footer-link"
+        className="footer-link -mx-1 -my-2 inline-flex min-w-7 justify-center px-1 py-2"
       >
         x<span className="sr-only"> (opens in a new tab)</span>
       </a>

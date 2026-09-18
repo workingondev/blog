@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# workingon.dev
 
-## Getting Started
+A minimal personal publication for Akshit's notes on technology, design,
+marketing, building, research, and internet culture.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 with the App Router
+- TypeScript
+- Tailwind CSS 4
+- MDX for articles
+- Shiki for code highlighting
+- KaTeX for mathematics
+- Mermaid for diagrams
+- D3 for charts
+
+Most pages are rendered as static HTML. Browser JavaScript is limited to the
+day/night control and diagrams that need Mermaid.
+
+## Development
+
+Install dependencies and start the development server:
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Useful checks:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Writing a post
 
-To learn more about Next.js, take a look at the following resources:
+1. Add an `.mdx` file to `content/blog`.
+2. Export the required metadata at the top of the file.
+3. Add the file to `postLoaders` in `content/blog/posts.ts`.
+4. Keep table-of-contents IDs synchronized with the article heading IDs.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Set `topic` to one of `Tech`, `Design`, `Marketing`, or `Random`. The writing
+page automatically shows filters only for topics that currently have posts;
+`tags` remain the more specific subjects displayed on each article.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Registered posts automatically appear on the writing index, sitemap, Atom
+feed, related-writing section, and previous/next navigation.
 
-## Deploy on Vercel
+## Publishing standard
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Every article should:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Answer one clear reader question with a descriptive title and introduction.
+- Contain original experience, analysis, examples, or diagrams.
+- Use one `h1` supplied by the article template, followed by logical `h2` and
+  `h3` sections.
+- Include descriptive internal links to relevant articles where they help the
+  reader, rather than relying only on the related-writing footer.
+- Link claims to primary sources whenever possible.
+- Provide accurate published and updated dates. Change the updated date only
+  after a meaningful revision.
+- Give every informative image descriptive alternative text and an optional
+  caption that explains why it matters.
+- Keep the metadata description specific to the article instead of repeating a
+  generic site description.
+- Avoid filler written only to reach a word count or target a keyword.
+
+Before publishing, run `npm run lint` and `npm run build`, then inspect the page
+on both desktop and mobile. After deployment, validate the canonical URL and
+structured data, and request indexing in Google Search Console when needed.
+
+## Production
+
+The canonical site URL is `https://workingon.dev`. Set
+`NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` in the deployment environment after
+creating the Google Search Console property.
+
+Before publishing, replace the placeholder GitHub and X URLs in
+`app/components/site-footer.tsx` with Akshit's profile URLs.

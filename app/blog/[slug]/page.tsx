@@ -31,7 +31,6 @@ export async function generateMetadata({
     description: metadata.description,
     authors: [{ name: metadata.author, url: "/" }],
     category: metadata.category,
-    keywords: metadata.tags,
     alternates: {
       canonical: url,
       types: {
@@ -46,12 +45,22 @@ export async function generateMetadata({
       publishedTime: metadata.published,
       modifiedTime: metadata.updated ?? metadata.published,
       authors: ["https://workingon.dev"],
+      section: metadata.category,
       tags: metadata.tags,
+      images: [
+        {
+          url: `${url}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: metadata.title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: metadata.title,
       description: metadata.description,
+      images: [`${url}/twitter-image`],
     },
   };
 }
@@ -86,19 +95,28 @@ export default async function ArticlePage({
     )
     .slice(0, 2);
   const canonicalUrl = `https://workingon.dev/blog/${slug}`;
+  const readingMinutes = Number.parseInt(metadata.readingTime, 10);
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Article",
+        "@type": "BlogPosting",
         "@id": `${canonicalUrl}#article`,
         headline: metadata.title,
         description: metadata.description,
         datePublished: metadata.published,
         dateModified: metadata.updated ?? metadata.published,
         inLanguage: "en",
-        mainEntityOfPage: canonicalUrl,
-        image: `${canonicalUrl}/opengraph-image`,
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": canonicalUrl,
+        },
+        image: {
+          "@type": "ImageObject",
+          url: `${canonicalUrl}/opengraph-image`,
+          width: 1200,
+          height: 630,
+        },
         author: {
           "@type": "Person",
           "@id": "https://workingon.dev/#person",
@@ -106,8 +124,12 @@ export default async function ArticlePage({
           url: "https://workingon.dev",
         },
         publisher: { "@id": "https://workingon.dev/#person" },
+        isPartOf: { "@id": "https://workingon.dev/blog#blog" },
         articleSection: metadata.category,
         keywords: metadata.tags.join(", "),
+        timeRequired: Number.isNaN(readingMinutes)
+          ? undefined
+          : `PT${readingMinutes}M`,
       },
       {
         "@type": "BreadcrumbList",
@@ -121,7 +143,7 @@ export default async function ArticlePage({
           {
             "@type": "ListItem",
             position: 2,
-            name: "Writing",
+            name: "writing",
             item: "https://workingon.dev/blog",
           },
           {
@@ -143,7 +165,7 @@ export default async function ArticlePage({
         <article>
           <div className="article-layout">
             <aside className="article-toc hidden lg:block" aria-label="On this page">
-              <p className="mb-4 text-[0.6875rem] tracking-[0.08em] text-neutral-500 uppercase">
+              <p className="mb-4 text-[0.6875rem] tracking-[0.08em] text-neutral-500">
                 On this page
               </p>
               <ol className="space-y-2.5 text-[0.75rem] leading-5 text-neutral-500 dark:text-neutral-500">
@@ -178,6 +200,8 @@ export default async function ArticlePage({
                   {metadata.description}
                 </p>
                 <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.6875rem] text-neutral-500 dark:text-neutral-500">
+                  <span>By {metadata.author}</span>
+                  <span aria-hidden="true">·</span>
                   <time dateTime={metadata.published}>
                     {formatDate(metadata.published)}
                   </time>
@@ -215,7 +239,7 @@ export default async function ArticlePage({
                 <section className="rule mt-16 border-t pt-8" aria-labelledby="related-writing">
                   <h2
                     id="related-writing"
-                    className="text-[0.6875rem] font-normal tracking-[0.08em] text-neutral-500 uppercase"
+                    className="text-[0.6875rem] font-normal tracking-[0.08em] text-neutral-500"
                   >
                     Related writing
                   </h2>
